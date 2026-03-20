@@ -14,11 +14,13 @@ const notesStorageFile = "notes.json";
 const notesStorageFullPath = join(notesStorageFolder, notesStorageFile);
 
 /**
- * Reads the notes from the storage file and returns an object containing the length of the notes array and the notes themselves.
+ * Reads the notes from the storage file and returns an object containing
+ * the length of the notes array and the notes themselves.
  *
- * @returns { length: number; notes: object[] }
+ * If the file does not exist, it will be created and initialized as an empty array.
+ * If the file contents are invalid or cannot be parsed, an empty array is returned.
  *
- * @throws {Error} If there is an error reading the file or parsing the JSON, an error will be thrown.
+ * @returns {{ length: number; notes: Note[] }} An object with the number of notes and the notes array.
  */
 function getNotes(): { length: number; notes: Note[] } {
     if (!existsSync(notesStorageFullPath))
