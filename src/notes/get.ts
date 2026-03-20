@@ -13,6 +13,34 @@ const notesStorageFile = "notes.json";
 /** path to notes storage file */
 const notesStorageFullPath = join(notesStorageFolder, notesStorageFile);
 
+//
+
+//
+
+/**
+ * Type guard, checks if a value is a valid note object
+ *
+ * @param obj - value of unknown/any shape
+ * @returns wheater `obj` can safely be treated as `Note`
+ */
+function isValidNote(obj: any): obj is Note {
+    if (!obj) return false;
+
+    if (typeof obj !== "object") return false;
+
+    return (
+        obj &&
+        typeof obj.id === "number" &&
+        typeof obj.text === "string" &&
+        typeof obj.status === "string" &&
+        typeof obj.createdAt === "number"
+    );
+}
+
+//
+
+//
+
 /**
  * Reads the notes from the storage file and returns an object containing
  * the length of the notes array and the notes themselves.
@@ -28,12 +56,16 @@ function getNotes(): { length: number; notes: Note[] } {
 
     try {
         const file: string = readFileSync(notesStorageFullPath, "utf-8");
-        const notes: Note[] = JSON.parse(file);
+        const parsed: [] = JSON.parse(file);
 
-        const notesLength = notes.length;
+        // Check is parsed is a valid Array then loops through it and filter out note objects that are valid type and assign the Array to `notes`
+        // returns empty array if parsed is not an array
+        const notes: Note[] = Array.isArray(parsed)
+            ? parsed.filter(isValidNote)
+            : [];
 
         return {
-            length: notesLength,
+            length: notes.length,
             notes: notes,
         };
     } catch (error) {
